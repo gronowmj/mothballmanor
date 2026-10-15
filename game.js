@@ -276,8 +276,8 @@
     if (h) {
       const air = h.ph !== 0, moving = !air && (held('left') !== held('right')) && G.mode === 'play' && !G.dying;
       let fk = 'stand';
-      if (air) fk = h.ph < 19 ? 'jump' : 'fall';
-      else if (moving) fk = ['a', 'b', 'c', 'b'][Math.floor(G.anim / 5) % 4];
+      if (air) fk = h.ph < P.PH_FALL ? 'jump' : 'fall';
+      else if (moving) fk = ['a', 'b', 'c', 'b'][Math.floor(G.anim / 6) % 4];
       let col = th.hero;
       if (G.dying) col = (G.dying >> 2) % 2 ? 'R' : 'W';
       const blink = G.inv > 0 && !G.dying && (G.inv >> 2) % 2 === 0;
@@ -495,7 +495,7 @@
       fresh: () => { newGame(); G.banner = 0; },
       freeze: on => { G.frozen = on !== false; },
       step: (n, bits) => { G.override = bits === undefined ? null : bits; for (let i = 0; i < (n || 1); i++) update(); G.override = null; render(); },
-      setRoom: (id, x, y, ph) => { G.room = id; G.roomT = 0; G.inv = 0; G.h = { x: x === undefined ? rooms[id].spawn.x : x, y: y === undefined ? rooms[id].spawn.y : y, ph: ph || 0 }; render(); },
+      setRoom: (id, x, y, ph) => { G.room = id; G.roomT = 0; G.inv = 0; G.dying = 0; G.h = { x: x === undefined ? rooms[id].spawn.x : x, y: y === undefined ? rooms[id].spawn.y : y, ph: ph || 0 }; render(); },
       respawnRoom: () => respawn(),
       setLives: n => { G.lives = n; },
       grab: (id, idx) => { if (!G.got[id].has(idx)) collect(id, idx); },

@@ -4,14 +4,18 @@
 (function (root) {
   'use strict';
   const T = 8, RW = 24, RH = 30, W = 192, ROOM_H = 240;
-  const HW = 8, HH = 15, SPEED = 2;
-  const UP = [4, 4, 4, 4, 3, 3, 3, 3, 2, 2, 2, 2, 1, 1, 1, 1];   // 40 px rise over 16 ticks
-  const DOWN = [1, 2, 2, 3, 3, 4];                                // falling speed ramps up, then stays at 4
-  const PH_FALL = 19, PH_MAX = 24;                                // phase: 0 ground, 1-16 rising, 17-18 hang, 19-24 falling
+  const HW = 8, HH = 15, SPEED = 1.5;                             // run speed in px per tick (90 px/s)
+  const UP = [3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1];   // 40 px rise over 21 ticks
+  const HANG = 3;                                                 // ticks at the top of the arc
+  const DOWN = [1, 1, 1, 2, 2, 2, 2, 3];                          // falling speed ramps up, then stays at 3
+  const PH_RISE = UP.length, PH_HANG = PH_RISE + HANG;            // phase: 0 ground, 1..PH_RISE rising, then hang,
+  const PH_FALL = PH_HANG + 1, PH_MAX = PH_FALL + DOWN.length - 1; // then falling up to PH_MAX
   const CYC = 240;                                                // all guardian periods divide this
-  const UP_ARRIVE_PH = 5, UP_ARRIVE_FEET = 232;
+  const UP_ARRIVE_FEET = 232;
+  // arriving from the room below the hero keeps rising: pick the phase with about 24 px of climb left
+  const UP_ARRIVE_PH = (() => { let rem = 0; for (let i = UP.length - 1; i >= 0; i--) { rem += UP[i]; if (rem >= 24) return i + 1; } return 1; })();
 
-  const vyOf = ph => ph >= 1 && ph <= 16 ? -UP[ph - 1] : ph <= 18 ? 0 : DOWN[Math.min(ph - PH_FALL, 5)];
+  const vyOf = ph => ph >= 1 && ph <= PH_RISE ? -UP[ph - 1] : ph <= PH_HANG ? 0 : DOWN[Math.min(ph - PH_FALL, DOWN.length - 1)];
 
   // guardian sprite sizes (kept here so the verifier uses the same hit boxes as the game)
   const SPR = { bat: [14, 8], ghost: [12, 14], spider: [10, 14], skull: [12, 12], rat: [14, 8], flame: [8, 14], cog: [12, 12], moth: [12, 10], barrel: [12, 12] };
@@ -44,7 +48,7 @@
   function step(room, s, inp) {
     const dir = ((inp & 2) ? 1 : 0) - ((inp & 1) ? 1 : 0);
     let x = s.x, y = s.y, ph = s.ph;
-    for (let i = 0; i < SPEED && dir; i++) { if (blocked(room, x + dir, y)) break; x += dir; }
+    for (let i = 0; i < SPEED * 2 && dir; i++) { if (blocked(room, x + dir * 0.5, y)) break; x += dir * 0.5; }
     if (ph === 0) {
       if (inp & 4) ph = 1;
       else if (!support(room, x, y)) ph = PH_FALL;
@@ -101,7 +105,7 @@
   const touchesItem = (x, y, it) => overlap(x, y, HW, HH, { x: it.c * T, y: it.r * T, w: T, h: T });
   const touchesDoor = (x, y, d) => overlap(x, y, HW, HH, { x: d.c * T, y: d.r * T, w: d.w * T, h: d.h * T });
 
-  const api = { T, RW, RH, W, ROOM_H, HW, HH, SPEED, UP, DOWN, PH_FALL, PH_MAX, CYC, SPR, vyOf, tileAt, blocked, support, step,
+  const api = { T, RW, RH, W, ROOM_H, HW, HH, SPEED, UP, DOWN, HANG, PH_RISE, PH_HANG, PH_FALL, PH_MAX, CYC, SPR, vyOf, tileAt, blocked, support, step,
     guardianPos, guardianDir, guardianRect, hurt, touchesItem, touchesDoor, overlap, UP_ARRIVE_PH, UP_ARRIVE_FEET };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.MMPhys = api;
 })(typeof window !== 'undefined' ? window : globalThis);
