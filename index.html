@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Mothball Manor">
+<meta name="format-detection" content="telephone=no">
+<meta name="description" content="Mothball Manor: an original nine-room platform adventure in the style of 1980s home-computer mansion games.">
+<title>Mothball Manor</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="safe" aria-hidden="true"></div>
+<div id="view"><canvas id="screen" aria-label="Mothball Manor game screen"></canvas></div>
+<div class="sys" id="bPause" role="button" aria-label="Pause"><svg viewBox="0 0 20 20"><rect x="4" y="3" width="4" height="14"/><rect x="12" y="3" width="4" height="14"/></svg></div>
+<div class="sys" id="bMute" role="button" aria-label="Mute"><svg viewBox="0 0 20 20"><path d="M2 7h4l5-4v14l-5-4H2z"/><path class="wave" d="M14 6q3 4 0 8M16 4q5 6 0 12" fill="none" stroke-width="2"/><path class="cross" d="M13 7l6 6M19 7l-6 6" fill="none" stroke-width="2"/></svg></div>
+<div class="btn" data-k="left" id="bLeft" aria-label="Left"><svg viewBox="0 0 20 20"><path d="M13 3L5 10l8 7z"/></svg></div>
+<div class="btn" data-k="right" id="bRight" aria-label="Right"><svg viewBox="0 0 20 20"><path d="M7 3l8 7-8 7z"/></svg></div>
+<div class="btn" data-k="jump" id="bJump" aria-label="Jump"><span>JUMP</span></div>
+<script src="physics.js"></script>
+<script src="rooms.js"></script>
+<script src="gfx.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
